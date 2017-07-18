@@ -1,11 +1,19 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using System.Linq;
 
 public class throwTrash : lerpable
 {
     public float digestionTime;
     private int destroyTime = 3;
 
+    //DO NOT TOUCH THESE THEY ARE USED FOR BARSCRIPT TO GET THE INFO NECESSARY
+    public static bool correctCollision;
+    public static GameObject tagHolder;
+    public static int count = 0;
+    // You can do whatever to these
     private Vector3 lastMousePosition;
     private Vector3 newMousePosition;
     private Vector2 distance;
@@ -15,13 +23,19 @@ public class throwTrash : lerpable
     private bool moveBySwipe;
     private bool startCounting;
     private float time;
+    GameObject temp;
 
-	//  Not thrown for now.
-	private GameObject throwingTarget = null; 
+    //  Not thrown for now.
+    private GameObject throwingTarget = null; 
 	//  Pointers to the target objects
     GameObject compost;
     GameObject landfill;
     GameObject recycle;
+
+
+    [SerializeField]
+    //private Image content;
+    int score = difficultySettings.score;
 
     /*
     Animator compostanim;
@@ -29,9 +43,9 @@ public class throwTrash : lerpable
     Animator recycleanim;
     */
 
-	public override void Start()
+    public override void Start()
     {
-		base.Start();
+        base.Start();
 		//  Reset these variables every step
         moveByBelt = true; //  move the object down if true, basically
         moveBySwipe = false; //  set to true after the finger is released
@@ -44,8 +58,12 @@ public class throwTrash : lerpable
 		landfill = GameObject.Find("landfill bin");
         //landfillanim = landfill.GetComponent<Animator> ();
 
-        recycle = GameObject.Find("recycle bin");
+        recycle = GameObject.Find("Recycle Bin");
+        //recyclePla = GameObject.Find("Plastic Bin");
+        //recycleG = GameObject.Find("Glass Bin");
+        //recyclePap = GameObject.Find("Paper Bin");
         //recycleanim = recycle.GetComponent<Animator> ();
+        //content.fillAmount = 1f;
     }
 
 
@@ -137,6 +155,7 @@ public class throwTrash : lerpable
 
         moveBySwipe = true;
         startCounting = true;
+        count = 0;
     }
 
 
@@ -163,35 +182,72 @@ public class throwTrash : lerpable
 
 	//  bin collisions
 	public bool checkForGoal(GameObject other){
-	//  checks for if the current trash scored a point and performs the following logic if so.
-	//  returns true on success
+        //  checks for if the current trash scored a point and performs the following logic if so.
+        //  returns true on success
+        correctCollision = false;
+        print(count + " first check");
+        print(difficultySettings.score + " SCORE");
+        temp = gameObject;
+        if (gameObject.tag == "Plastic" || gameObject.tag == "Paper" || 
+            gameObject.tag == "Metal" || gameObject.tag == "Glass")
+        {
+            temp =  (GameObject)Instantiate(gameObject);
+            //print("Before Change  " + gameObject.tag);
+            temp.tag = "recycle";
+            //print("After Change  " + gameObject.tag);
+            //print (temp.tag);
+        }
 		if (other.tag == gameObject.tag)
 		{
-			difficultySettings.score += 1;
+            count++;
+            difficultySettings.score += 1;
 			difficultySettings.playRecord.Add(gameObject.name.Substring(0, gameObject.name.Length - 7));
-			if (gameObject.tag == "recycle")
-			{
-				difficultySettings.digestionTime_rec = digestionTime;
-			}
-
-			if (gameObject.tag == "composite")
-			{
-				difficultySettings.digestionTime_com = digestionTime;
-			}
-			Destroy(gameObject);
-			return true;
-		} /*
+             if (gameObject.tag == "composite")
+             {
+                difficultySettings.digestionTime_com = digestionTime;
+                //tagHolder = gameObject;
+                tagHolder = (GameObject)Instantiate(gameObject);
+                correctCollision = true;
+             }
+            Destroy(gameObject);
+            print(difficultySettings.score);
+            return true;
+		}
+        else if(other.tag == temp.tag)
+        {
+            print(count + " second check");
+            count++;
+            if (count <= 1)
+            {
+                difficultySettings.score += 1;
+            }
+            difficultySettings.playRecord.Add(gameObject.name.Substring(0, gameObject.name.Length - 7));
+            if (gameObject.tag == "recycle" || temp.tag == "recycle")
+            {
+                difficultySettings.digestionTime_rec = digestionTime;
+                tagHolder = (GameObject)Instantiate(gameObject);
+                //tagHolder = gameObject;
+                correctCollision = true;
+            }
+            print(difficultySettings.score);
+            Destroy(gameObject);
+            return true;
+        }
+            
+            
+            /*
 		else if (other.tag == "landfill" & !difficultySettings.isTutorial)
 		{
 			difficultySettings.landfillCounter++;
 			Destroy(gameObject);
 			return true;
 		} */
-		//  Destroy in all cases, regardless of success
-		difficultySettings.landfillCounter++;
+        //  Destroy in all cases, regardless of success
+        difficultySettings.landfillCounter++;
+        print(difficultySettings.landfillCounter + " LANDFILL NUMBER");
 		Destroy(gameObject); //  added
 		return false;
-	}
+    }
 
-
+        
 }

@@ -12,7 +12,6 @@ public class startGame : MonoBehaviour
 	public float speed;
 	public float gap;
 	//public Button zbc;
-	System.Random type = new System.Random();
 
     void Start()
     {
@@ -77,7 +76,7 @@ public class startGame : MonoBehaviour
 	private void changeDifficulties()
 	{
         difficultySettings.barDropRate = difficultySettings.barDropRate * dropRate;
-        difficultySettings.barGainRate = difficultySettings.barGainRate * dropRate;
+        difficultySettings.barGainRatePlastic = difficultySettings.barGainRatePlastic * dropRate;
         difficultySettings.spawnGap = difficultySettings.spawnGap * gap;
         difficultySettings.moveSpeed = difficultySettings.moveSpeed * speed;
     }
