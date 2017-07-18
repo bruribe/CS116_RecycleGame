@@ -14,6 +14,7 @@ public class selectMenu : MonoBehaviour
     {
         Button lvl1 = level1.GetComponent<Button>();
         lvl1.onClick.AddListener(selectLevel1);
+        PopTextController.Initialize();
 
     }
 

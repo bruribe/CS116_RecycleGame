@@ -14,6 +14,7 @@ public class throwTrash : lerpable
     public static GameObject tagHolder;
     public static int count = 0;
     // You can do whatever to these
+
     private Vector3 lastMousePosition;
     private Vector3 newMousePosition;
     private Vector2 distance;
@@ -31,11 +32,6 @@ public class throwTrash : lerpable
     GameObject compost;
     GameObject landfill;
     GameObject recycle;
-
-
-    [SerializeField]
-    //private Image content;
-    int score = difficultySettings.score;
 
     /*
     Animator compostanim;
@@ -58,12 +54,7 @@ public class throwTrash : lerpable
 		landfill = GameObject.Find("landfill bin");
         //landfillanim = landfill.GetComponent<Animator> ();
 
-        recycle = GameObject.Find("Recycle Bin");
-        //recyclePla = GameObject.Find("Plastic Bin");
-        //recycleG = GameObject.Find("Glass Bin");
-        //recyclePap = GameObject.Find("Paper Bin");
-        //recycleanim = recycle.GetComponent<Animator> ();
-        //content.fillAmount = 1f;
+        recycle = GameObject.Find("recycle bin");
     }
 
 
@@ -155,7 +146,6 @@ public class throwTrash : lerpable
 
         moveBySwipe = true;
         startCounting = true;
-        count = 0;
     }
 
 
@@ -173,11 +163,22 @@ public class throwTrash : lerpable
         }
     }
 
+    //Displays floating text
+   /* public static void showText(string text, Vector2 pos)
+    {
+
+        var newInstance = new GameObject("damage");
+        v//ar textPop = newInstance.AddComponent<popText>();
+        textPop.position = pos;
+        textPop.myText = text;
+
+    }*/
 
     // bin collisions
     void OnTriggerEnter2D(Collider2D coll)
     {
-		checkForGoal(coll.gameObject);
+        count = 0;
+        checkForGoal(coll.gameObject);
     }
 
 	//  bin collisions
@@ -188,6 +189,7 @@ public class throwTrash : lerpable
         print(count + " first check");
         print(difficultySettings.score + " SCORE");
         temp = gameObject;
+        //gotta trick this lil' so I can have my tags and use them too
         if (gameObject.tag == "Plastic" || gameObject.tag == "Paper" || 
             gameObject.tag == "Metal" || gameObject.tag == "Glass")
         {
@@ -197,33 +199,31 @@ public class throwTrash : lerpable
             //print("After Change  " + gameObject.tag);
             //print (temp.tag);
         }
-		if (other.tag == gameObject.tag)
+        //count++;
+        if (other.tag == gameObject.tag)
 		{
-            count++;
-            difficultySettings.score += 1;
 			difficultySettings.playRecord.Add(gameObject.name.Substring(0, gameObject.name.Length - 7));
              if (gameObject.tag == "composite")
              {
+                //PopTextController.createFloatingText("$", other.transform);
                 difficultySettings.digestionTime_com = digestionTime;
                 //tagHolder = gameObject;
                 tagHolder = (GameObject)Instantiate(gameObject);
                 correctCollision = true;
              }
             Destroy(gameObject);
+            difficultySettings.score += 1;
+            PopTextController.createFloatingText("$", other.transform);
             print(difficultySettings.score);
             return true;
 		}
         else if(other.tag == temp.tag)
         {
             print(count + " second check");
-            count++;
-            if (count <= 1)
-            {
-                difficultySettings.score += 1;
-            }
             difficultySettings.playRecord.Add(gameObject.name.Substring(0, gameObject.name.Length - 7));
             if (gameObject.tag == "recycle" || temp.tag == "recycle")
             {
+                
                 difficultySettings.digestionTime_rec = digestionTime;
                 tagHolder = (GameObject)Instantiate(gameObject);
                 //tagHolder = gameObject;
@@ -231,6 +231,23 @@ public class throwTrash : lerpable
             }
             print(difficultySettings.score);
             Destroy(gameObject);
+            /*if (count <= 1)
+            {
+                difficultySettings.score += 1;
+            }*/
+            difficultySettings.score += 1;
+            if (gameObject.tag == "Paper" || gameObject.tag == "Glass")
+            {
+                PopTextController.createFloatingText("$", other.transform);
+            }
+            else if (gameObject.tag == "Plastic")
+            {
+                PopTextController.createFloatingText("$$", other.transform);
+            }
+            else if (gameObject.tag == "Metal")
+            {
+                PopTextController.createFloatingText("$$$", other.transform);
+            }
             return true;
         }
             

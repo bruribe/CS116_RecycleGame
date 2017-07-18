@@ -61,39 +61,39 @@ public class BarScript :MonoBehaviour {
         switch (tag)
         {
             case "Plastic":
-                if(throwTrash.count <= 1)
-                {
+                //if(throwTrash.count <= 1)
+               // {
                     content.fillAmount = content.fillAmount + difficultySettings.barGainRatePlastic;
                     score = difficultySettings.score;
-                }
+               // }
                 break;
             case "Glass":
-                if (throwTrash.count <= 1)
-                {
+               // if (throwTrash.count <= 1)
+               // {
                     content.fillAmount = content.fillAmount + difficultySettings.barGainRateGlass;
                     score = difficultySettings.score;
-                }
+               // }
                 break;
             case "Metal":
-                if (throwTrash.count <= 1)
-                {
+               // if (throwTrash.count <= 1)
+                //{
                     content.fillAmount = content.fillAmount + difficultySettings.barGainRateMetal;
                     score = difficultySettings.score;
-                }
+                //}
                 break;
             case "Paper":
-                if (throwTrash.count <= 1)
-                {
+               // if (throwTrash.count <= 1)
+                //{
                     content.fillAmount = content.fillAmount + difficultySettings.barGainRatePaper;
                     score = difficultySettings.score;
-                }
+                //}
                 break;
             case "composite":
-                if (throwTrash.count <= 1)
-                {
+                //if (throwTrash.count <= 1)
+               // {
                     content.fillAmount = content.fillAmount + difficultySettings.barGainRateCompost;
                     score = difficultySettings.score;
-                }
+                //}
                 break;
             default:
                 break;
